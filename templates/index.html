@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Speech</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">Text to Speech</h2>
+        <form id="text-to-speech-form">
+            <div class="form-group">
+                <label for="text">Enter Text:</label>
+                <textarea class="form-control" id="text" rows="4" placeholder="Enter text here"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="language">Select Language:</label>
+                <select class="form-control" id="language">
+                    <option value="ml">Malayalam</option>
+                    <option value="ta">Tamil</option>
+                    <option value="te">Telugu</option>
+                    <option value="hi">Hindi</option>
+                    <option value="kn">Kannada</option>
+                    <option value="as">Assamese</option>
+                    <option value="bn">Bengali</option>
+                    <option value="bodo">Bodo</option>
+                    <option value="doi">Dogri</option>
+                    <option value="gu">Gujarati</option>
+                    <option value="ks">Kashmiri</option>
+                    <option value="kok">Konkani</option>
+                    <option value="mai">Maithili</option>
+                       <option value="ks">Kashmiri</option>
+                    <option value="kok">Konkani</option>
+                    <option value="mai">Maithili</option>
+                    <option value="mni">Manipuri</option>
+                    <option value="mr">Marathi</option>
+                    <option value="ne">Nepali</option>
+                    <option value="or">Odia</option>
+                     <option value="pa">Punjabi</option>
+                    <option value="sa">Sanskrit</option>
+                    <option value="sat">Santali</option>
+                    <option value="sd">Sindhi</option>
+                     <option value="ur">Urdu</option>
+                    <!-- Add more languages as needed -->
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Convert to Speech</button>
+        </form>
+        <div id="audio-container" class="mt-4" style="display:none;">
+            <h5>Output Speech:</h5>
+            <audio controls id="audio"></audio>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#text-to-speech-form").on("submit", function(event){
+                event.preventDefault();
+                var text = $("#text").val();
+                var language = $("#language").val();
+
+                $.ajax({
+                    url: "/convert",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({text: text, language: language}),
+                    success: function(data){
+                        if(data.audio_url){
+                            $("#audio").attr("src", data.audio_url);
+                            $("#audio-container").show();
+                        } else {
+                            alert("Error generating speech. Please try again.");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
